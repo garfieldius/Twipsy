@@ -1,5 +1,6 @@
 /*
 ---
+
 description: Port of the Twitters jQuery.twipsy plugin to mootools
 
 license: Apache License 2.0
@@ -15,6 +16,8 @@ requires:
  - core:1.4.2/Element.Dimensions
 
 provides: [Twipsy, Element.twipsy, Elements.twipsy]
+
+...
 */
 (function (doc, win, udef) {
 
