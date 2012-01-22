@@ -52,7 +52,8 @@ provides: [Twipsy, Element.twipsy, Elements.twipsy]
 					? stylesContainer.styleSheet.cssText = stylesText
 					: stylesContainer.innerHTML = stylesText;
 			}
-		};
+		},
+		Twipsy;
 
 	// Determine browser support for CSS transitions
 	if (typeOf(Browser.Features.transition) != "boolean") {
@@ -77,8 +78,7 @@ provides: [Twipsy, Element.twipsy, Elements.twipsy]
 	}
 
 
-
-	var Twipsy = new Class({
+	Twipsy = new Class({
 
 		/**
 		 * Construct the twipsy
@@ -133,20 +133,20 @@ provides: [Twipsy, Element.twipsy, Elements.twipsy]
 
 				switch (placement) {
 					case 'below':
-						position = {top: pos.top + pos.height + this.options.offset, left: pos.left + pos.width / 2 - actualWidth / 2}
-						break
+						position = {top: pos.top + pos.height + this.options.offset, left: pos.left + pos.width / 2 - actualWidth / 2};
+						break;
 
 					case 'above':
-						position = {top: pos.top - actualHeight - this.options.offset, left: pos.left + pos.width / 2 - actualWidth / 2}
-						break
+						position = {top: pos.top - actualHeight - this.options.offset, left: pos.left + pos.width / 2 - actualWidth / 2};
+						break;
 
 					case 'left':
-						position = {top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left - actualWidth - this.options.offset}
-						break
+						position = {top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left - actualWidth - this.options.offset};
+						break;
 
 					case 'right':
-						position = {top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left + pos.width + this.options.offset}
-						break
+						position = {top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left + pos.width + this.options.offset};
+						break;
 				}
 
 				twipsyElement
@@ -166,7 +166,7 @@ provides: [Twipsy, Element.twipsy, Elements.twipsy]
 			var tip = this.getTip(),
 				removeElement = function() {
 					tip.parentNode.removeChild(tip);
-					if (Browser.Features.transition && tip.hasClass('fade')) {
+					if (Browser.Features.transition && tip.hasClass('twipsy-fade')) {
 						tip.removeEvents(transitionEndEventName);
 					}
 				};
@@ -242,8 +242,8 @@ provides: [Twipsy, Element.twipsy, Elements.twipsy]
 		validate:function () {
 			if (!this.element.parentNode) {
 				this.hide();
-				this.element = null
-				this.options = null
+				this.element = null;
+				this.options = null;
 				return false;
 			}
 			return true;
@@ -285,7 +285,7 @@ provides: [Twipsy, Element.twipsy, Elements.twipsy]
 		 * @return Twipsy
 		 */
 		toggle: function() {
-			this[this.getTip().hasClass('in') ? 'hide' : 'show']();
+			this[this.getTip().hasClass('twipsy-in') ? 'hide' : 'show']();
 			return this;
 		},
 
@@ -340,7 +340,7 @@ provides: [Twipsy, Element.twipsy, Elements.twipsy]
 				lower = res.toLowerCase().clean();
 				if (lower === "true") res = true;
 				else if (lower === "false") res = false;
-				else if (/^[0-9]+$/.test(lower)) lower = parseInt(lower, 10);
+				else if (/^[0-9]+$/.test(lower)) res = res.toInt();
 				data[item.camelCase()] = res;
 			}
 		});
@@ -350,11 +350,49 @@ provides: [Twipsy, Element.twipsy, Elements.twipsy]
 		}
 
 		return Object.merge({}, options, data);
-	}
+	};
 
 	Element.implement({
 		twipsy:function (options) {
-			var twipsy, binder, eventIn, eventOut, name = 'twipsy';
+			var twipsy, eventIn, eventOut, name = 'twipsy',
+				get = function(ele) {
+					var twipsy = ele.retrieve(name);
+
+					if (!twipsy) {
+						twipsy = new Twipsy(ele, Twipsy.elementOptions(ele, options));
+						ele.store(name, twipsy);
+					}
+
+					return twipsy;
+				},
+				enter = function () {
+					var twipsy = get(this);
+					twipsy.hoverState = 'in';
+
+					if (options.delayIn == 0) {
+						twipsy.show();
+					} else {
+						twipsy.fixTitle();
+						setTimeout(function () {
+							if (twipsy.hoverState == 'in') {
+								twipsy.show()
+							}
+						}, options.delayIn);
+					}
+				},
+				leave = function () {
+					var twipsy = get(this);
+					twipsy.hoverState = 'out';
+					if (options.delayOut == 0) {
+						twipsy.hide();
+					} else {
+						setTimeout(function () {
+							if (twipsy.hoverState == 'out') {
+								twipsy.hide();
+							}
+						}, options.delayOut);
+					}
+				};
 
 			if (options === true) {
 				return this.retrieve(name)
@@ -369,50 +407,9 @@ provides: [Twipsy, Element.twipsy, Elements.twipsy]
 
 			options = Object.merge({}, Twipsy.defaults, options);
 
-			function get(ele) {
-				var twipsy = ele.retrieve(name);
-
-				if (!twipsy) {
-					twipsy = new Twipsy(ele, Twipsy.elementOptions(ele, options));
-					ele.store(name, twipsy);
-				}
-
-				return twipsy
-			}
-
-			function enter() {
-				var twipsy = get(this);
-				twipsy.hoverState = 'in';
-
-				if (options.delayIn == 0) {
-					twipsy.show();
-				} else {
-					twipsy.fixTitle();
-					setTimeout(function () {
-						if (twipsy.hoverState == 'in') {
-							twipsy.show()
-						}
-					}, options.delayIn);
-				}
-			}
-
-			function leave() {
-				var twipsy = get(this);
-				twipsy.hoverState = 'out';
-				if (options.delayOut == 0) {
-					twipsy.hide();
-				} else {
-					setTimeout(function () {
-						if (twipsy.hoverState == 'out') {
-							twipsy.hide();
-						}
-					}, options.delayOut);
-				}
-			}
-
 			if (options.trigger != 'manual') {
-				eventIn = options.trigger == 'hover' ? 'mouseenter' : 'focus'
-				eventOut = options.trigger == 'hover' ? 'mouseleave' : 'blur'
+				eventIn = options.trigger == 'hover' ? 'mouseenter' : 'focus';
+				eventOut = options.trigger == 'hover' ? 'mouseleave' : 'blur';
 				get(this);
 				this.addEvent(eventIn, enter).addEvent(eventOut, leave);
 			}
