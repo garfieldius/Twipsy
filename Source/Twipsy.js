@@ -1,20 +1,20 @@
 /*
- ---
- description: Port of the Twitters jQuery.twipsy plugin to mootools
+---
+description: Port of the Twitters jQuery.twipsy plugin to mootools
 
- license: Apache License 2.0
+license: Apache License 2.0
 
- authors:
+authors:
  - Georg Großberger
  - Twitter, Inc.
  - Jason Frame
 
- requires:
+requires:
  - core:1.4.2/String
  - core:1.4.2/Element
  - core:1.4.2/Element.Dimensions
 
- provides: [Twipsy, Element.twipsy, Elements.twipsy]
+provides: [Twipsy, Element.twipsy, Elements.twipsy]
 */
 (function (doc, win, udef) {
 
