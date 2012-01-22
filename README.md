@@ -22,6 +22,7 @@ Options can be passed along by (they are read in the following order)
 * Adding `data-` properties to the elements you want to `twipsify`
 
 Example
+
 ```javascript
 Twipsy.default.offset = 10
 window.addEvent("domready", function() {
