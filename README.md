@@ -1,7 +1,7 @@
 Twipsy
 ===========
 
-This is a port of [Twitters twipsy for Bootstrag](http://twitter.github.com/bootstrap/javascript.html#twipsy) to [mootools](http://mootools.net/). It includes all features of the original, including a Twipsy object for custom integration and all styles are injected via the script, so no additional stylesheet is required.
+This is a port of [Twitters twipsy for Bootstrap](http://twitter.github.com/bootstrap/javascript.html#twipsy) to [mootools](http://mootools.net/). It includes all features of the original, including a Twipsy object for custom integration and all styles are injected via the script, so no additional stylesheet is required.
 
 ![Screenshot](http://www.garfieldius.net/external/github/twipsy/screen.png)
 
@@ -10,30 +10,35 @@ How to use
 
 Include the Twipsy.js and call `.twipsy` for an `Element` of an `Elements` collection of your choice.
 
-```javascript
+<pre>```javascript
 window.addEvent("domready", function() {
 	$$("a.twipsy").twipsy();
 });
-```
+```</pre>
 
 Options can be passed along by (they are read in the following order)
-1. Changing the values in Twipsy.defaults
-2. Passing an object to the `.twipsy` method or the `new Twipsy()` constructor
-3. Adding `data-` properties to the elements you want to `twipsify`
+* Changing the values in Twipsy.defaults
+* Passing an object to the `.twipsy` method or the `new Twipsy()` constructor
+* Adding `data-` properties to the elements you want to `twipsify`
 
 Example
-```javascript
+<pre>```javascript
 Twipsy.default.offset = 10
 window.addEvent("domready", function() {
 	$$("a.twipsy").twipsy({
 		"placement": "left"
 	});
 });
-```
+```</pre>
 
-```html
-<a href="#" class="twipsy" title="Show me on the left, with delay" data-delay-in="200" data-delay-out="200">Show</a>
-```
+<pre>```html
+<a
+	class="twipsy"
+	title="Show me on the left, with delay"
+	data-delay-in="200"
+	data-delay-out="200"
+	href="#">Show</a>
+```</pre>
 
 As you can see, the data attributes use hyphens in case the option value is camelCased.
 
@@ -121,6 +126,87 @@ window.addEvent("domready", function() {
 	</tr>
 </table>
 
+Styles
+----------
+If you implement your own styles by setting `injectStyles` to false, keep all definitions that are required for Twipsy to function properly. You also have to keep the selectors.
+Those are the default styles. Just copy and adjust to your needs:
+
+```css
+.twipsy {
+	display: block;
+	position: absolute;
+	visibility: visible;
+	padding: 5px;
+	font-size: 11px;
+	z-index: 1000;
+	filter: alpha(opacity = 80);
+	-khtml-opacity: 0.8;
+	-moz-opacity: 0.8;
+	opacity: 0.8;
+}
+.twipsy-fade {
+	-webkit-transition: opacity 0.15s linear;
+	-moz-transition: opacity 0.15s linear;
+	-ms-transition: opacity 0.15s linear;
+	-o-transition: opacity 0.15s linear;
+	transition: opacity 0.15s linear;
+	opacity: 0;
+}
+.twipsy.twipsy-fade.twipsy-in {
+	filter: alpha(opacity = 80);
+	-khtml-opacity: 0.8;
+	-moz-opacity: 0.8;
+	opacity: 0.8;
+}
+.twipsy.above .twipsy-arrow {
+	bottom: 0;
+	left: 50%;
+	margin-left: -5px;
+	border-left: 5px solid transparent;
+	border-right: 5px solid transparent;
+	border-top: 5px solid #000000;
+}
+.twipsy.left .twipsy-arrow {
+	top: 50%;
+	right: 0;
+	margin-top: -5px;
+	border-top: 5px solid transparent;
+	border-bottom: 5px solid transparent;
+	border-left: 5px solid #000000;
+}
+.twipsy.below .twipsy-arrow {
+	top: 0;
+	left: 50%;
+	margin-left: -5px;
+	border-left: 5px solid transparent;
+	border-right: 5px solid transparent;
+	border-bottom: 5px solid #000000;
+}
+.twipsy.right .twipsy-arrow {
+	top: 50%;
+	left: 0;
+	margin-top: -5px;
+	border-top: 5px solid transparent;
+	border-bottom: 5px solid transparent;
+	border-right: 5px solid #000000;
+}
+.twipsy-inner {
+	padding: 3px 8px;
+	background-color: #000000;
+	color: white;
+	text-align: center;
+	max-width: 200px;
+	text-decoration: none;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+}
+.twipsy-arrow {
+	position: absolute;
+	width: 0;
+	height: 0;
+}
+```
 
 
 Credits
